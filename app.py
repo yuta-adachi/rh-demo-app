@@ -1,6 +1,7 @@
 import json
-from flask import Flask,render_template, redirect, request, Markup, escape
+from flask import Flask,render_template, redirect, request, Markup, escape, flash
 import datetime
+import os
 
 app = Flask(__name__)
 
@@ -9,8 +10,8 @@ DATA_FILE = "datafile.json"
 def save_data(start, finish, memo, create_at):
     """
     saved data 
-    start : 乗った駅
-    finish : 降りた駅
+    start : 項目
+    finish : 場所
     memo : メモ
     create_at : 作成日
     """
@@ -41,6 +42,14 @@ def load_data():
     
     return database
 
+def delete_all_logs():
+    try:
+        os.remove(DATA_FILE)
+        
+    except FileNotFoundError :
+        file_status = "no_file"
+    
+
 # 項目表示用
 title = "ライフログ"
 name1 = "項目"
@@ -66,6 +75,11 @@ def save():
 @app.template_filter("nl2br")
 def nl2br_filter(s):
     return escape(s).replace("\n", Markup("<br>"))
+
+@app.route("/delete", methods=["POST", "GET"])
+def delete():
+    delete_all_logs()
+    return redirect("/")
 
 if __name__ == "__main__":
     app.run("0.0.0.0", 8080, debug=True)
