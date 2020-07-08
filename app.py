@@ -58,8 +58,10 @@ memo = "メモ"
 
 @app.route("/")
 def index():
+    # json dataを読み込んでldに収納する
     ld = load_data()
     return render_template("index.html", title=title, first=name1,\
+        # raideはindex.htmlで呼び出しをされる
          finish=name2, memo=memo, rides=ld)
 
 @app.route("/save", methods=["POST"])
